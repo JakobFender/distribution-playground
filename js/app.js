@@ -279,7 +279,7 @@
         if (s) {
           const freq = ks.map((k) => (s.counts.get(k) || 0) / s.n);
           hmax = Math.max(...freq);
-          series.push({ kind: 'bars', xs: ks, ys: freq, barWidth: 0.8, fill: 0.4, color: c3 });
+          series.push({ kind: 'bars', xs: ks, ys: freq, barWidth: 0.8, fill: 0.25, color: c3 });
         }
         series.push({ kind: 'lollipop', xs: ks, ys, color: c1, radius: ks.length > 60 ? 2.5 : 4.5 });
         yMax = Math.max(Math.max(...ys), hmax) * 1.12 || 1;
@@ -301,11 +301,11 @@
           if (i >= 0 && i < bins) heights[i] += 1 / (s.n * w);
         }
         const edges = Array.from({ length: bins + 1 }, (_, i) => x0 + i * w);
-        series.push({ kind: 'hist', edges, heights, fill: 0.4, color: c3, gap: true });
+        series.push({ kind: 'hist', edges, heights, fill: 0.25, color: c3, gap: true });
         yMax = Math.max(yMax, Math.min(Math.max(...heights), yMax * 1.5));
       }
       yMax *= 1.08;
-      series.push({ kind: 'curve', xs, ys, color: c1, fill: 0.14, width: 2 });
+      series.push({ kind: 'curve', xs, ys, color: c1, fill: 0.1, width: 2 });
     } else {
       const n = 600;
       const xs = new Float64Array(n);
@@ -526,7 +526,7 @@
     wrap.innerHTML = '';
     const hard = g.settings.difficulty === 'hard';
     if (!hard) {
-      wrap.innerHTML = `<p class="family-known">${g.target.d.name} <small>— match its parameters</small></p>`;
+      wrap.innerHTML = `<p class="family-known">${g.target.d.name} <small>Match its parameters</small></p>`;
     } else {
       const label = document.createElement('label');
       label.className = 'param-label';
@@ -576,13 +576,13 @@
       const yu = ks.map((k) => du.pmf(k, pu));
       const umax = Math.max(...yu);
       yMax = Math.max(g.targetYMax, Math.min(umax, 2 * g.targetYMax)) * 1.15;
-      series.push({ kind: 'bars', xs: ks, ys: yu, barWidth: 0.72, fill: 0.55, color: c1 });
+      series.push({ kind: 'bars', xs: ks, ys: yu, barWidth: 0.72, fill: 0.35, color: c1 });
       series.push({ kind: 'lollipop', xs: ks, ys: yt, color: c2, hollow: true, dash: [4, 3], radius: ks.length > 60 ? 2.5 : 4.5 });
     } else {
       const t = densityGrid(dt, pt, x0, x1);
       const u = densityGrid(du, pu, x0, x1);
       yMax = Math.max(g.targetYMax, Math.min(densityYMax(u.ys), 2 * g.targetYMax)) * 1.12;
-      series.push({ kind: 'curve', xs: u.xs, ys: u.ys, color: c1, fill: 0.2, width: 2 });
+      series.push({ kind: 'curve', xs: u.xs, ys: u.ys, color: c1, fill: 0.12, width: 2 });
       series.push({ kind: 'curve', xs: t.xs, ys: t.ys, color: c2, width: 2.5, dash: [7, 5] });
     }
     gPlot.set({ xRange: [x0, x1], yMax, series, discrete: dt.type === 'discrete' });
@@ -680,7 +680,8 @@
         : '';
     showResult(
       'win',
-      `<h3>Solved in ${secs}s! +${points}</h3>
+      `<h3><em>Solved</em> in ${secs}s</h3>
+       <p class="meta">+${points} points${g.hintUsed ? ' · hint used' : ''}</p>
        <p>Target: <b>${paramString(g.target.d, g.target.p)}</b></p>
        <p>Yours: ${paramString(g.guess.d, g.guess.p)}</p>${familyNote}`
     );
