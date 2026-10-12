@@ -7,55 +7,64 @@
   <meta name="description" content="Play with common probability distributions and test your intuition in a curve-fitting game.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=Onest:wght@400;500&family=Martian+Mono&display=swap">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 28 C10 28 11 4 16 4 S22 28 30 28Z' fill='%232a78d6'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 28 C10 28 11 4 16 4 S22 28 30 28Z' fill='%236B7A3A'/%3E%3C/svg%3E">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 28 C10 28 11 4 16 4 S22 28 30 28Z"/></svg>
-      <span>Distribution Playground</span>
-    </div>
+    <a class="brand" href="#normal" aria-label="Distribution playground home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 28 C10 28 11 4 16 4 S22 28 30 28"/></svg>
+      <span>Distribution <em>playground</em></span>
+    </a>
     <nav class="mode-switch" role="tablist" aria-label="Mode">
       <button role="tab" data-mode="explore" aria-selected="true">Explore</button>
       <button role="tab" data-mode="game" aria-selected="false">Fit game</button>
     </nav>
-    <button class="icon-btn" id="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    <button class="icon-btn" id="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
   </header>
 
   <!-- ===================== Explore mode ===================== -->
   <main id="explore" class="mode">
+    <header class="intro">
+      <p class="label">01 — Explore</p>
+      <h1>Get a <em>feel</em> for distributions</h1>
+      <p class="lede">Pick one of 24 distributions, move its parameters and draw samples to see theory and data side by side.</p>
+    </header>
+
     <nav class="dist-tabs" aria-label="Distributions">
       <div class="tab-group">
-        <span class="tab-group-label">Continuous</span>
+        <span class="label">Continuous · 16</span>
         <div class="tab-row" id="tabs-continuous" role="tablist"></div>
       </div>
       <div class="tab-group">
-        <span class="tab-group-label">Discrete</span>
+        <span class="label">Discrete · 8</span>
         <div class="tab-row" id="tabs-discrete" role="tablist"></div>
       </div>
     </nav>
 
     <section class="workspace">
-      <aside class="controls card">
+      <aside class="controls">
         <div class="dist-head">
-          <h1 id="ex-name"></h1>
-          <span class="badge" id="ex-type"></span>
+          <h2 id="ex-name"></h2>
+          <span class="meta" id="ex-type"></span>
         </div>
         <p class="desc" id="ex-desc"></p>
         <div class="formula" id="ex-formula"></div>
 
-        <h2>Parameters</h2>
+        <h3 class="label">Parameters</h3>
         <div id="ex-params" class="params"></div>
         <div class="row-btns">
           <button class="btn ghost" id="ex-reset">Reset</button>
           <button class="btn ghost" id="ex-random">Randomize</button>
         </div>
 
-        <h2>Summary</h2>
+        <h3 class="label">Summary</h3>
         <table class="stats" id="ex-stats"></table>
 
-        <h2>Sampling</h2>
+        <h3 class="label">Sampling</h3>
         <div class="sample-row">
           <select id="ex-n" aria-label="Number of samples">
             <option value="100">100</option>
@@ -64,11 +73,11 @@
             <option value="100000">100,000</option>
           </select>
           <button class="btn" id="ex-sample">Draw samples</button>
-          <button class="btn ghost" id="ex-clear">Clear</button>
+          <button class="link-btn" id="ex-clear">Clear</button>
         </div>
       </aside>
 
-      <div class="plot-card card">
+      <div class="plot-card">
         <div class="plot-toolbar">
           <div class="segmented" role="radiogroup" aria-label="Function">
             <button data-view="pdf" aria-pressed="true" id="ex-view-pdf">PDF</button>
@@ -84,39 +93,45 @@
 
   <!-- ===================== Game mode ===================== -->
   <main id="game" class="mode" hidden>
-    <section class="game-bar card">
-      <label>Difficulty
+    <header class="intro">
+      <p class="label">02 — Fit game</p>
+      <h1>Can you <em>match</em> the curve?</h1>
+      <p class="lede">The dashed line is a mystery distribution. Move the sliders until your guess shares enough probability mass with it.</p>
+    </header>
+
+    <section class="game-bar">
+      <label><span class="label">Difficulty</span>
         <select id="g-difficulty">
           <option value="easy">Easy — family shown</option>
           <option value="hard">Hard — guess the family too</option>
         </select>
       </label>
-      <label>Distributions
+      <label><span class="label">Distributions</span>
         <select id="g-pool">
           <option value="all">All</option>
           <option value="continuous">Continuous only</option>
           <option value="discrete">Discrete only</option>
         </select>
       </label>
-      <label>Win at
+      <label><span class="label">Win at</span>
         <select id="g-threshold">
           <option value="0.9">90% overlap</option>
           <option value="0.95" selected>95% overlap</option>
           <option value="0.98">98% overlap</option>
         </select>
       </label>
-      <button class="btn" id="g-new">New round</button>
-      <div class="scoreboard">
-        <div><span id="g-score">0</span><small>score</small></div>
-        <div><span id="g-won">0</span><small>solved</small></div>
-        <div><span id="g-streak">0</span><small>streak</small></div>
-        <div><span id="g-best">0</span><small>best streak</small></div>
-      </div>
+      <button class="btn ghost" id="g-new">New round</button>
+      <dl class="scoreboard">
+        <div><dt>Score</dt><dd id="g-score">0</dd></div>
+        <div><dt>Solved</dt><dd id="g-won">0</dd></div>
+        <div><dt>Streak</dt><dd id="g-streak">0</dd></div>
+        <div><dt>Best</dt><dd id="g-best">0</dd></div>
+      </dl>
     </section>
 
     <section class="workspace">
-      <aside class="controls card">
-        <h2 class="first">Your guess</h2>
+      <aside class="controls">
+        <h3 class="label first">Your guess</h3>
         <div id="g-family-wrap"></div>
         <div id="g-params" class="params"></div>
 
@@ -134,10 +149,10 @@
         <div id="g-result" class="result" hidden></div>
       </aside>
 
-      <div class="plot-card card">
+      <div class="plot-card">
         <div class="plot-toolbar">
           <div class="legend" id="g-legend"></div>
-          <span class="timer" id="g-timer">0:00</span>
+          <span class="meta timer" id="g-timer">0:00</span>
         </div>
         <div class="plot-wrap"><canvas id="g-canvas"></canvas></div>
       </div>
@@ -145,8 +160,8 @@
   </main>
 
   <footer class="foot">
-    Overlap = shared probability mass, ∑ min(p, q). Built with plain JavaScript —
-    <a href="https://github.com/jakobfender/distribution-playground">source</a>.
+    <span>Overlap = ∑ min(p, q)</span> · <span>Plain JavaScript, no build step</span> ·
+    <a href="https://github.com/jakobfender/distribution-playground" target="_blank" rel="noopener">Source ↗</a>
   </footer>
 
   <script defer src="js/math.js"></script>

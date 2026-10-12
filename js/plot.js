@@ -48,7 +48,7 @@
       this.spec = null;
       this.hoverX = null;
       this.onHover = opts.onHover || null; // (x) => [lines] | null
-      this.margin = { top: 14, right: 16, bottom: 36, left: 56 };
+      this.margin = { top: 16, right: 16, bottom: 32, left: 64 };
       this.tooltip = document.createElement('div');
       this.tooltip.className = 'plot-tooltip';
       this.tooltip.hidden = true;
@@ -63,6 +63,7 @@
         this.draw();
       });
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => this.draw());
+      if (document.fonts) document.fonts.ready.then(() => this.draw());
     }
 
     set(spec) {
@@ -150,7 +151,7 @@
         crosshair: cssVar(canvas, '--text-secondary'),
         surface: cssVar(canvas, '--surface'),
       };
-      ctx.font = '12px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.font = "11px 'Martian Mono', ui-monospace, monospace";
 
       // Grid + ticks
       const yt = ticks(0, yMax, Math.max(3, Math.floor(this.plotH / 50)), false);
