@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Distribution Playground</title>
+  <meta name="description" content="Play with common probability distributions and test your intuition in a curve-fitting game.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 28 C10 28 11 4 16 4 S22 28 30 28Z' fill='%232a78d6'/%3E%3C/svg%3E">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 28 C10 28 11 4 16 4 S22 28 30 28Z"/></svg>
+      <span>Distribution Playground</span>
+    </div>
+    <nav class="mode-switch" role="tablist" aria-label="Mode">
+      <button role="tab" data-mode="explore" aria-selected="true">Explore</button>
+      <button role="tab" data-mode="game" aria-selected="false">Fit game</button>
+    </nav>
+    <button class="icon-btn" id="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+  </header>
+
+  <!-- ===================== Explore mode ===================== -->
+  <main id="explore" class="mode">
+    <nav class="dist-tabs" aria-label="Distributions">
+      <div class="tab-group">
+        <span class="tab-group-label">Continuous</span>
+        <div class="tab-row" id="tabs-continuous" role="tablist"></div>
+      </div>
+      <div class="tab-group">
+        <span class="tab-group-label">Discrete</span>
+        <div class="tab-row" id="tabs-discrete" role="tablist"></div>
+      </div>
+    </nav>
+
+    <section class="workspace">
+      <aside class="controls card">
+        <div class="dist-head">
+          <h1 id="ex-name"></h1>
+          <span class="badge" id="ex-type"></span>
+        </div>
+        <p class="desc" id="ex-desc"></p>
+        <div class="formula" id="ex-formula"></div>
+
+        <h2>Parameters</h2>
+        <div id="ex-params" class="params"></div>
+        <div class="row-btns">
+          <button class="btn ghost" id="ex-reset">Reset</button>
+          <button class="btn ghost" id="ex-random">Randomize</button>
+        </div>
+
+        <h2>Summary</h2>
+        <table class="stats" id="ex-stats"></table>
+
+        <h2>Sampling</h2>
+        <div class="sample-row">
+          <select id="ex-n" aria-label="Number of samples">
+            <option value="100">100</option>
+            <option value="1000" selected>1,000</option>
+            <option value="10000">10,000</option>
+            <option value="100000">100,000</option>
+          </select>
+          <button class="btn" id="ex-sample">Draw samples</button>
+          <button class="btn ghost" id="ex-clear">Clear</button>
+        </div>
+      </aside>
+
+      <div class="plot-card card">
+        <div class="plot-toolbar">
+          <div class="segmented" role="radiogroup" aria-label="Function">
+            <button data-view="pdf" aria-pressed="true" id="ex-view-pdf">PDF</button>
+            <button data-view="cdf" aria-pressed="false">CDF</button>
+          </div>
+          <label class="check"><input type="checkbox" id="ex-autozoom" checked> Auto-zoom axes</label>
+          <div class="legend" id="ex-legend"></div>
+        </div>
+        <div class="plot-wrap"><canvas id="ex-canvas"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== Game mode ===================== -->
+  <main id="game" class="mode" hidden>
+    <section class="game-bar card">
+      <label>Difficulty
+        <select id="g-difficulty">
+          <option value="easy">Easy — family shown</option>
+          <option value="hard">Hard — guess the family too</option>
+        </select>
+      </label>
+      <label>Distributions
+        <select id="g-pool">
+          <option value="all">All</option>
+          <option value="continuous">Continuous only</option>
+          <option value="discrete">Discrete only</option>
+        </select>
+      </label>
+      <label>Win at
+        <select id="g-threshold">
+          <option value="0.9">90% overlap</option>
+          <option value="0.95" selected>95% overlap</option>
+          <option value="0.98">98% overlap</option>
+        </select>
+      </label>
+      <button class="btn" id="g-new">New round</button>
+      <div class="scoreboard">
+        <div><span id="g-score">0</span><small>score</small></div>
+        <div><span id="g-won">0</span><small>solved</small></div>
+        <div><span id="g-streak">0</span><small>streak</small></div>
+        <div><span id="g-best">0</span><small>best streak</small></div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="controls card">
+        <h2 class="first">Your guess</h2>
+        <div id="g-family-wrap"></div>
+        <div id="g-params" class="params"></div>
+
+        <div class="meter-block">
+          <div class="meter-label"><span>Overlap with target</span><strong id="g-overlap">0%</strong></div>
+          <div class="meter"><div class="meter-fill" id="g-meter"></div><div class="meter-goal" id="g-goal"></div></div>
+          <p class="hint-text" id="g-feedback"></p>
+        </div>
+
+        <div class="row-btns">
+          <button class="btn ghost" id="g-hint">Hint (−25)</button>
+          <button class="btn ghost" id="g-giveup">Give up</button>
+        </div>
+        <div id="g-hint-box" class="hint-box" hidden></div>
+        <div id="g-result" class="result" hidden></div>
+      </aside>
+
+      <div class="plot-card card">
+        <div class="plot-toolbar">
+          <div class="legend" id="g-legend"></div>
+          <span class="timer" id="g-timer">0:00</span>
+        </div>
+        <div class="plot-wrap"><canvas id="g-canvas"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    Overlap = shared probability mass, ∑ min(p, q). Built with plain JavaScript —
+    <a href="https://github.com/jakobfender/distribution-playground">source</a>.
+  </footer>
+
+  <script defer src="js/math.js"></script>
+  <script defer src="js/distributions.js"></script>
+  <script defer src="js/plot.js"></script>
+  <script defer src="js/app.js"></script>
+</body>
+</html>
