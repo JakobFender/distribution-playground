@@ -680,7 +680,7 @@
         : '';
     showResult(
       'win',
-      `<h3><em>Solved</em> in ${secs}s</h3>
+      `<h3>Solved in ${secs}s</h3>
        <p class="meta">+${points} points${g.hintUsed ? ' · hint used' : ''}</p>
        <p>Target: <b>${paramString(g.target.d, g.target.p)}</b></p>
        <p>Yours: ${paramString(g.guess.d, g.guess.p)}</p>${familyNote}`
